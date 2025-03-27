@@ -13,18 +13,18 @@ mcp = FastMCP("bilibili-notice-mcp-server")
 @mcp.tool
 def general_search(keyword: str) -> list[dict[str, Any]]:
     """
-    通用搜索
+    General search
     Args:
-        keyword: 搜索关键词
+        keyword: search keyword
     Returns:
-        搜索结果
+        search results
     """
     return sync(search.general_search(keyword))
 
 
 def get_stared_up() -> list[str]:
     """
-    get stared up from file
+    Get stared up from file
     """
     with open("stared_up.txt", "r") as f:
         return f.read().splitlines()
@@ -32,7 +32,9 @@ def get_stared_up() -> list[str]:
 
 def init_base_file() -> None:
     """
-    初始化基础文件，只有第一次执行且本地没有基础文件时执行
+    Initialize base files
+    Create an empty stared_up.txt file if it doesn't exist
+    This file is used to store the list of UP creators that the user follows
     """
     if not os.path.exists("stared_up.txt"):
         with open("stared_up.txt", "w") as f:
