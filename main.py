@@ -1,6 +1,7 @@
 # def main():
 #     print("Hello from bilibili-notice-mcp-server!")
 
+from pprint import pp
 import os
 from typing import Any
 
@@ -10,7 +11,7 @@ from mcp.server.fastmcp import FastMCP
 mcp = FastMCP("bilibili-notice-mcp-server")
 
 
-@mcp.tool
+@mcp.tool()
 def general_search(keyword: str) -> list[dict[str, Any]]:
     """
     General search
@@ -19,10 +20,11 @@ def general_search(keyword: str) -> list[dict[str, Any]]:
     Returns:
         search results
     """
-    return sync(search.general_search(keyword))
+    return sync(search.search(keyword))
 
 
-def get_stared_up() -> list[str]:
+@mcp.tool()
+def get_all_stared_up() -> list[str]:
     """
     Get stared up from file
     """
@@ -38,11 +40,31 @@ def init_base_file() -> None:
     """
     if not os.path.exists("stared_up.txt"):
         with open("stared_up.txt", "w") as f:
-            pass
+            f.write("")
+
+
+@mcp.tool()
+def add_stared_up(up_name: list[str]) -> None:
+    """
+    Add a new UP creator to the list
+    """
+    with open("stared_up.txt", "a") as f:
+        for up in up_name:
+            f.write(f"{up}\n")
+
+
+@mcp.tool()
+def check_up_name(up_name: str) -> bool:
+    """
+    Check if the UP creator exists
+    """
+    return sync(search.general_search(up_name))
 
 
 if __name__ == "__main__":
-    print("Starting bilibili-notice-mcp-server...")
+    pp("Starting bilibili-notice-mcp-server...")
     init_base_file()
+    all_stared_up = get_all_stared_up()
+    pp(all_stared_up)
 
     mcp.run(transport="stdio")
